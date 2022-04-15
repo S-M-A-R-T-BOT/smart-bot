@@ -7,7 +7,7 @@ const LoginService = require('../lib/services/LoginService');
 const mockUser = {
   username: 'tester',
   password: 'guest',
-  phoneNumber: '1234567890',
+  phoneNumber: 1234567890,
   email: 'test@demo.com'
 };
 
