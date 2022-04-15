@@ -13,20 +13,7 @@ SMS MESSAGING
 TWILLO SMS https://www.twilio.com/blog/2016/04/send-text-in-javascript-node-in-30-seconds.html
 TWILLO NPM https://www.npmjs.com/package/twilio
 
-CODE for SMS
-const sid = 'ACab5c7156f3687deacd25004e4e83293a';
-const authToken = '1b69991a7871018d1e8e8741997682a5';
-
-const twilio = require('twilio')(sid, authToken);
-
-twilio.messages.create({
-  from: '+19705163541',
-  to: '+15034747724',
-  body: 'Howdy Howdy'
-})
-.then(res => console.log('message has been sent'))
-.catch(e => console.log(e));
-
 node_modules
 .env
+.ignore-file
 dist
