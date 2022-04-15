@@ -6,9 +6,12 @@ CREATE TABLE users (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   user_name TEXT NOT NULL,
   password_hash TEXT NOT NULL,
-  ph_num INT
+  ph_num BIGINT,
+  email TEXT
 );
 
+-- add stocks table
+-- user_picks should be junction table for stocks and users many to many relationship
 CREATE TABLE user_picks( 
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   ticker TEXT[],
@@ -23,11 +26,11 @@ CREATE TABLE sms_intervals (
   users BIGINT REFERENCES users(id)
 );
 
-INSERT INTO users (user_name, password_hash, ph_num)
+INSERT INTO users (user_name, password_hash, ph_num, email)
 VALUES
-('Humma Kavula', 'MoroccanPollenHash', 8677401),
-('Yon Yonson', 'BubbleHash', 911),
-('Piccillo Pete', 'IndianCharasHash', 911);
+('Humma Kavula', 'MoroccanPollenHash', 8677401, 'Humma@Morocco.com'),
+('Yon Yonson', 'BubbleHash', 911, 'yon@bubbles.com'),
+('Piccillo Pete', 'IndianCharasHash', 7165559280, 'Peter@piccillo.com');
 
 INSERT INTO user_picks (ticker, users)
 VALUES
