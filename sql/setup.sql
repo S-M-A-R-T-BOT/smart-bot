@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS stocks CASCADE;
 DROP TABLE IF EXISTS user_picks CASCADE;
 DROP TABLE IF EXISTS sms_intervals CASCADE;
 
@@ -12,6 +13,13 @@ CREATE TABLE users (
 
 -- add stocks table
 -- user_picks should be junction table for stocks and users many to many relationship
+CREATE TABLE stocks (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  ticker TEXT NOT NULL,
+
+)
+
 CREATE TABLE user_picks( 
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   ticker TEXT[],
