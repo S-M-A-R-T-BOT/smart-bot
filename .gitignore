@@ -1,3 +1,32 @@
+API END-POINTS
+finnhub stocks https://finnhub.io/docs/api/introduction
+finnhub-js npm https://www.npmjs.com/package/finnhub
+finnhub api https://finnhub.io/api/v1/stock/profile2?symbol=googl&token=c9bimraad3i8r0u41sag
+historical data https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=c9bimraad3i8r0u41sag
+
+ALL US STOCKS
+https://eodhistoricaldata.com/api/exchange-symbol-list/US?api_token=625894be00c484.82080223&fmt=json
+ALL NASDAQ STOCKS
+https://eodhistoricaldata.com/api/exchange-symbol-list/NASDAQ?api_token=625894be00c484.82080223&fmt=json
+
+SMS MESSAGING 
+TWILLO SMS https://www.twilio.com/blog/2016/04/send-text-in-javascript-node-in-30-seconds.html
+TWILLO NPM https://www.npmjs.com/package/twilio
+
+CODE for SMS
+const sid = 'ACab5c7156f3687deacd25004e4e83293a';
+const authToken = '1b69991a7871018d1e8e8741997682a5';
+
+const twilio = require('twilio')(sid, authToken);
+
+twilio.messages.create({
+  from: '+19705163541',
+  to: '+15034747724',
+  body: 'Howdy Howdy'
+})
+.then(res => console.log('message has been sent'))
+.catch(e => console.log(e));
+
 node_modules
 .env
 dist
