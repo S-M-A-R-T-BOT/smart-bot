@@ -11,13 +11,12 @@ CREATE TABLE users (
   email TEXT
 );
 
--- add stocks table
--- user_picks should be junction table for stocks and users many to many relationship
+-- stocks table is just a list of stocks that SOMEBODY is tracking.
+-- user_stocks is a junction table that tells us WHO is tracking each stock in the stocks table
 CREATE TABLE stocks (
   id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL,
   ticker TEXT NOT NULL
-
 );
 
 CREATE TABLE user_stocks( 
