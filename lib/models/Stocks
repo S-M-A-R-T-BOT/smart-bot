@@ -1,0 +1,10 @@
+const pool = require('../utils/pool');
+const fetch
+
+module.exports = class Stock {
+  id;
+
+  static async getRandomStock(){
+    
+  }
+};

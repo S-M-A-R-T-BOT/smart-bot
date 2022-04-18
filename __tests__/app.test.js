@@ -54,6 +54,8 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
+    console.log('|| res.body >', res.body);
+
     // const { username, phoneNumber, email } = mockUser;
     
 
