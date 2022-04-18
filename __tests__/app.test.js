@@ -19,7 +19,7 @@ const registerAndLogin = async (userProps = {}) => {
   const user = await LoginService.create({ ...mockUser, ...userProps });
 
   const { username } = user;
-  await (await agent.post('/api/v1/login')).setEncoding({ username, password });
+  await agent.post('/api/v1/login').send({ username, password });
   return [agent, user];
 };
 
@@ -49,13 +49,15 @@ describe('stock-bot routes', () => {
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
 
-    const res = await agent
+    const res  = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
 
     console.log('|| res.body >', res.body);
-
+    expect(res.body).toEqual(
+      expect.arrayContaining([expect.objectContaining({})])
+    );
     // const { username, phoneNumber, email } = mockUser;
     
     
