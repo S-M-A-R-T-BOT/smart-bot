@@ -19,7 +19,7 @@ const registerAndLogin = async (userProps = {}) => {
   const user = await LoginService.create({ ...mockUser, ...userProps });
 
   const { username } = user;
-  await (await agent.post('/api/v1/login')).setEncoding({ username, password });
+  await agent.post('/api/v1/login')).send({ username, password });
   return [agent, user];
 };
 
