@@ -58,7 +58,7 @@ describe('stock-bot routes', () => {
 
     // const { username, phoneNumber, email } = mockUser;
     
-
+    
   });
 
   // it('login and redirect', async () => {
