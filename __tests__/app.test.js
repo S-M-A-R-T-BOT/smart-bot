@@ -49,13 +49,15 @@ describe('stock-bot routes', () => {
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
 
-    const res = await agent
+    const res  = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
 
     console.log('|| res.body >', res.body);
-
+    expect(res.body).toEqual(
+      expect.arrayContaining([expect.objectContaining({})])
+    );
     // const { username, phoneNumber, email } = mockUser;
 
     
