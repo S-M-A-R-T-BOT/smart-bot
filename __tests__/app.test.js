@@ -32,20 +32,6 @@ describe('stock-bot routes', () => {
     pool.end();
   });
 
-  // it('creates a new user', async () => {
-  //   const res = await request(app)
-  //     .post('/api/v1/login')
-  //     .send(mockUser);
-  //   const { username, phoneNumber, email } = mockUser;
-
-  //   expect(res.body).toEqual({
-  //     id: expect.any(String),
-  //     username,
-  //     phoneNumber,
-  //     email
-  //   });
-  // });
-
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
 
@@ -63,24 +49,26 @@ describe('stock-bot routes', () => {
     
   });
 
-  // it('login and redirect', async () => {
-  //   //login user
-  //   const agent = request(app);
+  it.only('adds a stock to a users watchlist', async () => {
+    const [agent] = await registerAndLogin();
 
-  //   const res = await agent
-  //     .get('/api/v1/login')
-  //     .send(mockUser)
-  //     .redirects(1);
+    const res = await agent
+      // .post(`/api/v1/stocks/${ticker}`)
+      .post('/api/v1/stocks/picks')
+      .send({
+        name: 'TEST',
+        ticker: 'TST'
+      });
 
-  // }); 
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'TEST',
+      ticker: 'TST'
+    });
+  });
 
-  // it('fetches an array of all stocks, randomly chooses one, displays values, refresh periodically', async () => {
-  //   //login user
-  //   const agent = request(app);
 
-  //   const res = await agent
-  //     .get('/api/v1/')
 
-  // }); 
+
 
 });
