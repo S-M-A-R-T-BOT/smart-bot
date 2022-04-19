@@ -63,7 +63,7 @@ describe('stock-bot routes', () => {
       });
 
     expect(res.body).toEqual({
-      id: expect.any(String),
+      stock_id: expect.any(String),
       name: 'Test, Inc',
       ticker: 'TST'
     });
@@ -80,7 +80,17 @@ describe('stock-bot routes', () => {
     });
   });
 
+  it('gets a user by id and tells us which stocks they are tracking', async () => {
+    const res = await request(app).get('/api/v1/login/1');
 
+
+    expect(res.body).toEqual({
+      user_id: '1',
+      username: 'Humma Kavula',
+      phoneNumber: 8677401,
+      stocks: expect.arrayContaining([expect.objectContaining({})])
+    });
+  });
 
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
@@ -116,7 +126,7 @@ describe('stock-bot routes', () => {
       smsInterval: '0',
       valuePlus: 0,
       valueMinus: 0,
-      userId: '4'
+      user_id: '4'
     });
   });
 
@@ -153,7 +163,7 @@ describe('stock-bot routes', () => {
       .get('/api/v1/sms');
 
     let updateUser = {
-      userId: res.body.id,
+      user_id: res.body.id,
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
@@ -162,7 +172,7 @@ describe('stock-bot routes', () => {
     let updateRes;
     
     //update sms interval
-    if(updateUser.userId === res.body.id){
+    if(updateUser.user_id === res.body.id){
       updateRes = await agent
         .post('/api/v1/sms/update-interval')
         .send(updateUser);
@@ -172,7 +182,7 @@ describe('stock-bot routes', () => {
         smsInterval: '5 Minutes',
         valuePlus: 0,
         valueMinus: 0,
-        userId: '4'
+        user_id: '4'
       });
     } else {
       console.log('User cannot adjust intervals of other Users');
@@ -181,7 +191,7 @@ describe('stock-bot routes', () => {
     }
 
     updateUser = {
-      userId: '2',
+      user_id: '2',
       interval: '30 Minutes',
       valuePlus: 50,
       valueMinus: 20
@@ -190,7 +200,7 @@ describe('stock-bot routes', () => {
     console.log(`|| res.body.id >`, res.body.id);
 
     //update sms interval
-    if(updateUser.userId === res.body.id){
+    if(updateUser.user_id === res.body.id){
       updateRes = await agent
         .post('/api/v1/sms/update-interval')
         .send(updateUser);
@@ -203,13 +213,13 @@ describe('stock-bot routes', () => {
     }
 
     updateUser = {
-      userId: '4',
+      user_id: '4',
       interval: '30 Minutes',
       valuePlus: 50,
       valueMinus: 20
     };
 
-    if(updateUser.userId === res.body.id){
+    if(updateUser.user_id === res.body.id){
       updateRes = await agent
         .post('/api/v1/sms/update-interval')
         .send(updateUser);
@@ -219,7 +229,7 @@ describe('stock-bot routes', () => {
         smsInterval: '30 Minutes',
         valuePlus: 50,
         valueMinus: 20,
-        userId: '4'
+        user_id: '4'
       });
     } else {
       console.log('User cannot adjust intervals of other Users');
