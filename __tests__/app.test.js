@@ -124,7 +124,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should update sms_interval for user', async () => {
+  it.only('should update sms_interval for signed in user, and not for anyone else', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -132,22 +132,18 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
-
-    const updateUser = {
+    let updateUser = {
       userId: res.body[0].id,
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
     };
-    
     res.body.push(updateUser);
 
     //update user array
-    const updateSms = await agent
+    let updateSms = await agent
       .post('/api/v1/sms')
       .send(res.body);
-
-    console.log('|| updateSms >', updateSms.body);
     
     expect(updateSms.body).toEqual({
       id: '4',
@@ -156,6 +152,21 @@ describe('stock-bot routes', () => {
       valueMinus: 0,
       userId: '4'
     });
+
+    updateUser = {
+      userId: '2',
+      interval: '5 Minutes',
+      valuePlus: 0,
+      valueMinus: 0
+    };
+
+    res.body.pop();
+    res.body.push(updateUser);
+    updateSms = await agent
+      .post('/api/v1/sms')
+      .send(res.body);
+
+    expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
 });
