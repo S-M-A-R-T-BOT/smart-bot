@@ -91,7 +91,8 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should return a default row for new user ', async () => {
+
+  it.skip('should return a default row for new user ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -129,7 +130,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should update sms_interval for user', async () => {
+  it.skip('should update sms_interval for user', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
