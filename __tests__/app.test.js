@@ -45,6 +45,42 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
     );
+
+    // const { username, phoneNumber, email } = mockUser;
+
+    
+  });
+
+  it('logs user in and adds stock to watchlist', async () => {
+    const [agent] = await registerAndLogin();
+
+    const res = await agent
+      // .post(`/api/v1/stocks/${ticker}`)
+      .post('/api/v1/stocks')
+      .send({
+        name: 'Test, Inc',
+        ticker: 'TST'
+      });
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Test, Inc',
+      ticker: 'TST'
+    });
+  });
+
+  it('gets a stock by id and tells us which users are tracking it', async () => {
+    const res = await request(app).get('/api/v1/stocks/1');
+
+    expect(res.body).toEqual({
+      stock_id: '1',
+      name: 'Microsoft',
+      ticker: 'MSFT',
+      users: expect.arrayContaining([expect.objectContaining({})])
+    });
+  });
+
+
   });
 
   it('should return a default row for new user ', async () => {
