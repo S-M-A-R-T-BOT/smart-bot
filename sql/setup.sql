@@ -29,7 +29,7 @@ CREATE TABLE sms_intervals (
   sms_interval TEXT DEFAULT '0',
   value_plus INT DEFAULT 0,
   value_minus INT DEFAULT 0,
-  users BIGINT  
+  users BIGINT 
 );
 
 INSERT INTO users (username, password_hash, ph_num, email)
