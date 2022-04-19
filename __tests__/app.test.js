@@ -239,8 +239,15 @@ describe('stock-bot routes', () => {
     
   });
 
-  it.skip('should logout a user', async () => {
-    const agent = request.agent(app);
+  it('should logout a user', async () => {
+    const agent1 = request.agent(app);
+
+    const res  = await agent1
+      .post('/api/v1/login')
+      .send(mockUser)
+      .redirects(1);
+    const agent = await agent1.delete('/api/v1/login/logout');
+    expect(agent.body).toEqual({ success: true });
 
   });
 });
