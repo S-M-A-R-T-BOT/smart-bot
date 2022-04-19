@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS sms_intervals CASCADE;
 DROP TABLE IF EXISTS user_stocks CASCADE;
 
 CREATE TABLE users (
-  id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   username TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   ph_num BIGINT,
@@ -14,14 +14,14 @@ CREATE TABLE users (
 -- stocks table is just a list of stocks that SOMEBODY is tracking.
 -- user_stocks is a junction table that tells us WHO is tracking each stock in the stocks table
 CREATE TABLE stocks (
-  id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  stock_id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL,
   ticker TEXT NOT NULL
 );
 
 CREATE TABLE user_stocks( 
-  user_id BIGINT REFERENCES users(id),
-  stock_id BIGINT REFERENCES stocks(id)
+  user_id BIGINT REFERENCES users(user_id),
+  stock_id BIGINT REFERENCES stocks(stock_id)
 );
 
 CREATE TABLE sms_intervals (
@@ -29,7 +29,7 @@ CREATE TABLE sms_intervals (
   sms_interval TEXT DEFAULT '0',
   value_plus INT DEFAULT 0,
   value_minus INT DEFAULT 0,
-  users BIGINT REFERENCES users(id)
+  users BIGINT REFERENCES users(user_id)
 );
 
 

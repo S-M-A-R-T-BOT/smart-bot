@@ -67,14 +67,14 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('gets a stock by id and tells us which users are tracking it', async () => {
+  it('gets a stock by id and tells us which users are tracking it', async () => {
     const res = await request(app).get('/api/v1/stocks/1');
 
     expect(res.body).toEqual({
-      id: '1',
+      stock_id: '1',
       name: 'Microsoft',
       ticker: 'MSFT',
-      users: expect.arrayContaining([])
+      users: expect.arrayContaining([expect.objectContaining({})])
     });
   });
 
