@@ -80,9 +80,6 @@ describe('stock-bot routes', () => {
     });
   });
 
-
-  });
-
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
     //login user
