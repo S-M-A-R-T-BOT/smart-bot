@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS user_stocks CASCADE;
 
 CREATE TABLE users (
   id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  user_name TEXT NOT NULL,
+  username TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   ph_num BIGINT,
   email TEXT
@@ -34,7 +34,7 @@ CREATE TABLE sms_intervals (
 
 
 
-INSERT INTO users (user_name, password_hash, ph_num, email)
+INSERT INTO users (username, password_hash, ph_num, email)
 VALUES
 ('Humma Kavula', 'MoroccanPollenHash', 8677401, 'Humma@Morocco.com'),
 ('Yon Yonson', 'BubbleHash', 911, 'yon@bubbles.com'),

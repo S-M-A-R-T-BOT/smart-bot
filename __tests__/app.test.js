@@ -49,12 +49,12 @@ describe('stock-bot routes', () => {
     
   });
 
-  it.only('logs user in and adds stock to watchlist', async () => {
+  it('logs user in and adds stock to watchlist', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
       // .post(`/api/v1/stocks/${ticker}`)
-      .post('/api/v1/stocks/AAPL')
+      .post('/api/v1/stocks')
       .send({
         name: 'Test, Inc',
         ticker: 'TST'
@@ -67,7 +67,16 @@ describe('stock-bot routes', () => {
     });
   });
 
+  it.only('gets a stock by id and tells us which users are tracking it', async () => {
+    const res = await request(app).get('/api/v1/stocks/1');
 
+    expect(res.body).toEqual({
+      id: '1',
+      name: 'Microsoft',
+      ticker: 'MSFT',
+      users: expect.arrayContaining([])
+    });
+  });
 
 
 
