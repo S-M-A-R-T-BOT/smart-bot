@@ -29,18 +29,14 @@ CREATE TABLE sms_intervals (
   sms_interval TEXT DEFAULT '0',
   value_plus INT DEFAULT 0,
   value_minus INT DEFAULT 0,
-  users BIGINT REFERENCES users(id)
+  users BIGINT  
 );
-
-
 
 INSERT INTO users (username, password_hash, ph_num, email)
 VALUES
 ('Humma Kavula', 'MoroccanPollenHash', 8677401, 'Humma@Morocco.com'),
 ('Yon Yonson', 'BubbleHash', 911, 'yon@bubbles.com'),
 ('Piccillo Pete', 'IndianCharasHash', 7165559280, 'Peter@piccillo.com');
-
-
 
 INSERT INTO sms_intervals (sms_interval, value_plus, value_minus, users)
 VALUES
