@@ -32,20 +32,6 @@ describe('stock-bot routes', () => {
     pool.end();
   });
 
-  // it('creates a new user', async () => {
-  //   const res = await request(app)
-  //     .post('/api/v1/login')
-  //     .send(mockUser);
-  //   const { username, phoneNumber, email } = mockUser;
-
-  //   expect(res.body).toEqual({
-  //     id: expect.any(String),
-  //     username,
-  //     phoneNumber,
-  //     email
-  //   });
-  // });
-
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
 
@@ -54,33 +40,52 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
-    console.log('|| res.body >', res.body);
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
     );
-    // const { username, phoneNumber, email } = mockUser;
-    
-    
   });
 
-  // it('login and redirect', async () => {
-  //   //login user
-  //   const agent = request(app);
+  it('should return a default row for new user ', async () => {
+    const agent = request.agent(app);
+    //login user
+    const res = await agent
+      .post('/api/v1/login')
+      .send(mockUser)
+      .redirects(1);
 
-  //   const res = await agent
-  //     .get('/api/v1/login')
-  //     .send(mockUser)
-  //     .redirects(1);
 
-  // }); 
+    // const user = await res.body[0];
+    //get sms array
+    const sms = await agent
+      .get('/api/v1/sms');
 
-  // it('fetches an array of all stocks, randomly chooses one, displays values, refresh periodically', async () => {
-  //   //login user
-  //   const agent = request(app);
+    // update new users sms settings
+    // const insertSMSforNewUser = ('3 minuets', 10, 10, res.body[0].id);
+    let newRow = '';
 
-  //   const res = await agent
-  //     .get('/api/v1/')
+    // console.log('|| userId >', res.body[0].id);
+    // console.log('|| sms.body >', sms.body);
+    for (const s of sms.body){
+      if(s.id === res.body[0].id){
+        console.log('user ID has already been entered');
+        return;
+      } else {
+        newRow = await agent
+          .post('/api/v1/sms/newUser')
+          .send(res.body[0].id);
+      }
+    }
 
-  // }); 
+    expect(newRow.body).toEqual({
+      id: expect.any(String),
+      smsInterval: '0',
+      valuePlus: 0,
+      valueMinus: 0,
+      userId: expect.any(String)
+    });
+
+
+    console.log('|| newRow >', newRow.body);
+  });
 
 });
