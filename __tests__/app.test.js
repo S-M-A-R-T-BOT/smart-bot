@@ -42,6 +42,7 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
+
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
     );
@@ -62,8 +63,10 @@ describe('stock-bot routes', () => {
         ticker: 'TST'
       });
 
+    console.log('|| res.body >', res.body);
+
     expect(res.body).toEqual({
-      id: expect.any(String),
+      stock_id: expect.any(String),
       name: 'Test, Inc',
       ticker: 'TST'
     });
@@ -80,27 +83,27 @@ describe('stock-bot routes', () => {
     });
   });
 
-
-  });
-
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
     //login user
-    let res = await agent
+    const res = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
 
-    //get sms array
+    // get sms array
     const sms = await agent
       .get('/api/v1/sms');
+
+    console.log('|| sms.body >', sms.body);
+    console.log('|| res.body >', res.body);
 
     // create new users sms settings
     let checkState = false;
     for (const s of sms.body){
       if(s.id === res.body[0].id){
         // eslint-disable-next-line
-        console.log('user ID has already been entered');
+          console.log('user ID has already been entered');
         checkState = true;
         break;
       }
@@ -124,245 +127,138 @@ describe('stock-bot routes', () => {
   it.only('should update sms_interval for user', async () => {
     const agent = request.agent(app);
     //login user
-
-    // let res = await agent
-    //   .post('/api/v1/sms/update_interval');
-
     const res = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
 
-    let updateUser = {
-      userId: res.body.id,
+
+    const updateUser = {
+      userId: res.body[0].id,
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
     };
-
+    
     res.body.push(updateUser);
 
     //update user array
     const updateSms = await agent
       .post('/api/v1/sms')
-      .send(res.body, updateUser);
+      .send(res.body);
 
-    // let sms = await agent
-    //   .get('/api/v1/sms');
-      
-    // //insert new user default sms
-    // let checkState = false;
-    // for(const s of sms.body){
-    //   if(s.id === res.body[0].id){
-    //     // eslint-disable-next-line
-    //     console.log('user ID has already been entered');
-    //     checkState = true;
-    //     break;
-    //   } 
-    // }
-
-    // if (checkState === false){
-    //   // eslint-disable-next-line
-    //   console.log('creating new User sms settings');
-    //   res = await agent
-    //     .post('/api/v1/sms/newUser')
-    //     .send(res.body[0].id);
-    // }
-
-    // sms = await agent
-    //   .get('/api/v1/sms');
-
-    // let updateUser = {
-    //   userId: res.body.id,
-    //   interval: '5 Minutes',
-    //   valuePlus: 0,
-    //   valueMinus: 0
-    // };
-
-    // let updateRes;
+    console.log('|| updateSms >', updateSms.body);
     
-    // //update sms interval
-    // if(updateUser.userId === res.body.id){
-    //   updateRes = await agent
-    //     .post('/api/v1/sms/update-interval')
-    //     .send(updateUser);
-
-    //   expect(updateRes.body).toEqual({
-    //     id: '4',
-    //     smsInterval: '5 Minutes',
-    //     valuePlus: 0,
-    //     valueMinus: 0,
-    //     userId: '4'
-    //   });
-    // } else {
-    //   // eslint-disable-next-line
-    //   console.log('User cannot adjust intervals of other Users');
-    //   updateRes = true;
-    //   expect(updateRes).toEqual(false);
-    // }
-
-    // updateUser = {
-    //   userId: '2',
-    //   interval: '30 Minutes',
-    //   valuePlus: 50,
-    //   valueMinus: 20
-    // };
-
-    // //update sms interval
-    // if(updateUser.userId === res.body.id){
-    //   updateRes = await agent
-    //     .post('/api/v1/sms/update-interval')
-    //     .send(updateUser);
-
-    //   expect(updateRes.body).toEqual('undefined');
-    // } else {
-    //   // eslint-disable-next-line
-    //   console.log('User cannot adjust intervals of other Users');
-    //   updateRes = true;
-    //   expect(updateRes).toEqual(true);
-    // }
-
-    // updateUser = {
-    //   userId: '4',
-    //   interval: '30 Minutes',
-    //   valuePlus: 50,
-    //   valueMinus: 20
-    // };
-
-    // if(updateUser.userId === res.body.id){
-    //   updateRes = await agent
-    //     .post('/api/v1/sms/update-interval')
-    //     .send(updateUser);
-
-    //   expect(updateRes.body).toEqual({
-    //     id: '4',
-    //     smsInterval: '30 Minutes',
-    //     valuePlus: 50,
-    //     valueMinus: 20,
-    //     userId: '4'
-    //   });
-    // } else {
-    //   // eslint-disable-next-line
-    //   console.log('User cannot adjust intervals of other Users');
-    //   updateRes = true;
-    //   expect(updateRes).toEqual(false);
-    // }
-  
-    
+    // expect(updateSms).toEqual(undefined);
   });
 
-  // it.only('should update sms_interval for user', async () => {
-  //   const agent = request.agent(app);
-  //   //login user
-  //   let res = await agent
-  //     .post('/api/v1/login')
-  //     .send(mockUser)
-  //     .redirects(1);
+// it.only('should update sms_interval for user', async () => {
+//   const agent = request.agent(app);
+//   //login user
+//   let res = await agent
+//     .post('/api/v1/login')
+//     .send(mockUser)
+//     .redirects(1);
 
-  //   //update user array
-  //   let sms = await agent
-  //     .get('/api/v1/sms');
+//   //update user array
+//   let sms = await agent
+//     .get('/api/v1/sms');
       
-  //   //insert new user default sms
-  //   let checkState = false;
-  //   for(const s of sms.body){
-  //     if(s.id === res.body[0].id){
-  //       console.log('user ID has already been entered');
-  //       checkState = true;
-  //       break;
-  //     } 
-  //   }
+//   //insert new user default sms
+//   let checkState = false;
+//   for(const s of sms.body){
+//     if(s.id === res.body[0].id){
+//       console.log('user ID has already been entered');
+//       checkState = true;
+//       break;
+//     } 
+//   }
 
-  //   if (checkState === false){
-  //     console.log('creating new User sms settings');
-  //     res = await agent
-  //       .post('/api/v1/sms/newUser')
-  //       .send(res.body[0].id);
-  //   }
+//   if (checkState === false){
+//     console.log('creating new User sms settings');
+//     res = await agent
+//       .post('/api/v1/sms/newUser')
+//       .send(res.body[0].id);
+//   }
 
-  //   sms = await agent
-  //     .get('/api/v1/sms');
+//   sms = await agent
+//     .get('/api/v1/sms');
 
-  //   let updateUser = {
-  //     userId: res.body.id,
-  //     interval: '5 Minutes',
-  //     valuePlus: 0,
-  //     valueMinus: 0
-  //   };
+//   let updateUser = {
+//     userId: res.body.id,
+//     interval: '5 Minutes',
+//     valuePlus: 0,
+//     valueMinus: 0
+//   };
 
-  //   let updateRes;
+//   let updateRes;
     
-  //   //update sms interval
-  //   if(updateUser.userId === res.body.id){
-  //     updateRes = await agent
-  //       .post('/api/v1/sms/update-interval')
-  //       .send(updateUser);
+//   //update sms interval
+//   if(updateUser.userId === res.body.id){
+//     updateRes = await agent
+//       .post('/api/v1/sms/update-interval')
+//       .send(updateUser);
 
-  //     expect(updateRes.body).toEqual({
-  //       id: '4',
-  //       smsInterval: '5 Minutes',
-  //       valuePlus: 0,
-  //       valueMinus: 0,
-  //       userId: '4'
-  //     });
-  //   } else {
-  //     console.log('User cannot adjust intervals of other Users');
-  //     updateRes = true;
-  //     expect(updateRes).toEqual(false);
-  //   }
+//     expect(updateRes.body).toEqual({
+//       id: '4',
+//       smsInterval: '5 Minutes',
+//       valuePlus: 0,
+//       valueMinus: 0,
+//       userId: '4'
+//     });
+//   } else {
+//     console.log('User cannot adjust intervals of other Users');
+//     updateRes = true;
+//     expect(updateRes).toEqual(false);
+//   }
 
-  //   updateUser = {
-  //     userId: '2',
-  //     interval: '30 Minutes',
-  //     valuePlus: 50,
-  //     valueMinus: 20
-  //   };
+//   updateUser = {
+//     userId: '2',
+//     interval: '30 Minutes',
+//     valuePlus: 50,
+//     valueMinus: 20
+//   };
 
-  //   console.log(`|| res.body.id >`, res.body.id);
+//   console.log(`|| res.body.id >`, res.body.id);
 
-  //   //update sms interval
-  //   if(updateUser.userId === res.body.id){
-  //     updateRes = await agent
-  //       .post('/api/v1/sms/update-interval')
-  //       .send(updateUser);
+//   //update sms interval
+//   if(updateUser.userId === res.body.id){
+//     updateRes = await agent
+//       .post('/api/v1/sms/update-interval')
+//       .send(updateUser);
 
-  //     expect(updateRes.body).toEqual('undefined');
-  //   } else {
-  //     console.log('User cannot adjust intervals of other Users');
-  //     updateRes = true;
-  //     expect(updateRes).toEqual(true);
-  //   }
+//     expect(updateRes.body).toEqual('undefined');
+//   } else {
+//     console.log('User cannot adjust intervals of other Users');
+//     updateRes = true;
+//     expect(updateRes).toEqual(true);
+//   }
 
-  //   updateUser = {
-  //     userId: '4',
-  //     interval: '30 Minutes',
-  //     valuePlus: 50,
-  //     valueMinus: 20
-  //   };
+//   updateUser = {
+//     userId: '4',
+//     interval: '30 Minutes',
+//     valuePlus: 50,
+//     valueMinus: 20
+//   };
 
-  //   if(updateUser.userId === res.body.id){
-  //     updateRes = await agent
-  //       .post('/api/v1/sms/update-interval')
-  //       .send(updateUser);
+//   if(updateUser.userId === res.body.id){
+//     updateRes = await agent
+//       .post('/api/v1/sms/update-interval')
+//       .send(updateUser);
 
-  //     expect(updateRes.body).toEqual({
-  //       id: '4',
-  //       smsInterval: '30 Minutes',
-  //       valuePlus: 50,
-  //       valueMinus: 20,
-  //       userId: '4'
-  //     });
-  //   } else {
-  //     console.log('User cannot adjust intervals of other Users');
-  //     updateRes = true;
-  //     expect(updateRes).toEqual(false);
-  //   }
+//     expect(updateRes.body).toEqual({
+//       id: '4',
+//       smsInterval: '30 Minutes',
+//       valuePlus: 50,
+//       valueMinus: 20,
+//       userId: '4'
+//     });
+//   } else {
+//     console.log('User cannot adjust intervals of other Users');
+//     updateRes = true;
+//     expect(updateRes).toEqual(false);
+//   }
   
     
-  // });
-
-  it.skip('should logout a user', async () => {
-    const agent = request.agent(app);
-
-  });
+// });
 });
