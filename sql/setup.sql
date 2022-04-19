@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS user_stocks CASCADE;
 
 CREATE TABLE users (
   id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  user_name TEXT NOT NULL,
+  username TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   ph_num BIGINT,
   email TEXT
@@ -17,7 +17,6 @@ CREATE TABLE stocks (
   id BIGINT UNIQUE GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL,
   ticker TEXT NOT NULL
-
 );
 
 CREATE TABLE user_stocks( 
@@ -30,18 +29,14 @@ CREATE TABLE sms_intervals (
   sms_interval TEXT DEFAULT '0',
   value_plus INT DEFAULT 0,
   value_minus INT DEFAULT 0,
-  users BIGINT REFERENCES users(id)
+  users BIGINT  
 );
 
-
-
-INSERT INTO users (user_name, password_hash, ph_num, email)
+INSERT INTO users (username, password_hash, ph_num, email)
 VALUES
 ('Humma Kavula', 'MoroccanPollenHash', 8677401, 'Humma@Morocco.com'),
 ('Yon Yonson', 'BubbleHash', 911, 'yon@bubbles.com'),
 ('Piccillo Pete', 'IndianCharasHash', 7165559280, 'Peter@piccillo.com');
-
-
 
 INSERT INTO sms_intervals (sms_interval, value_plus, value_minus, users)
 VALUES
