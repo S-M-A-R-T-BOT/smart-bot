@@ -228,6 +228,24 @@ describe('stock-bot routes', () => {
 
     const newNumber = { phoneNumber: 5034747724 };
 
+    if(updateUser.user_id === res.body.id){
+      updateRes = await agent
+        .post('/api/v1/sms/update-interval')
+        .send(updateUser);
+
+      expect(updateRes.body).toEqual({
+        id: '4',
+        smsInterval: '30 Minutes',
+        valuePlus: 50,
+        valueMinus: 20,
+        user_id: '4'
+      });
+    } else {
+      console.log('User cannot adjust intervals of other Users');
+      updateRes = true;
+      expect(updateRes).toEqual(false);
+    }
+
     const updatePhNum = await agent
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0], ...newNumber });
@@ -242,7 +260,38 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.skip('should send a text message', async () => { 
+
+ it('should re-log in a user', async () => {
+    const agent1 = request.agent(app);
+
+    let mockUserForLogin = {
+      username: 'Yon Yonson',
+      phoneNumber: 911,
+      password: 'BubbleHash',
+      email: 'yon@bubbles.com'
+    };
+    // const res  = await agent1
+    //   .post('/api/v1/login')
+    //   .send(mockUser)
+    //   .redirects(1);
+    const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
+    expect(agent.body).toEqual({ success: true });
+
+  });
+
+  it('should logout a user', async () => {
+    const agent1 = request.agent(app);
+
+    const res  = await agent1
+      .post('/api/v1/login')
+      .send(mockUser)
+      .redirects(1);
+    const agent = await agent1.delete('/api/v1/login/logout');
+    expect(agent.body).toEqual({ success: true });
+
+  });
+
+  it('should send a text message', async () => { 
     const agent = request.agent(app);
     //login user
     let res = await agent
