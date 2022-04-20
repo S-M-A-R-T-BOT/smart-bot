@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const LoginService = require('../lib/services/LoginService');
 const req = require('express/lib/request');
 const { check } = require('prettier');
+const StockService = require('../lib/services/StockService');
 
 const mockUser = {
   username: 'tester',
@@ -233,5 +234,24 @@ describe('stock-bot routes', () => {
   it.skip('should logout a user', async () => {
     const agent = request.agent(app);
 
+  });
+
+  it.only('should search for a stock by symbol', async () => {
+    const expected = {
+      c: expect.any(Number),
+      d: expect.any(Number),
+      dp: expect.any(Number),
+      h: expect.any(Number),
+      l: expect.any(Number),
+      o: expect.any(Number),
+      pc: expect.any(Number),
+      t: expect.any(Number)
+    };
+
+    const res = await StockService.getStockBySymbol('AAPL');
+    console.log('EXTECPETD STOCKIINFO', res);
+
+    expect(res).toEqual(expected);
+   
   });
 });
