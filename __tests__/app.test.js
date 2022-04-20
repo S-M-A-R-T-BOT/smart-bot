@@ -46,12 +46,12 @@ describe('stock-bot routes', () => {
     );   
   });
 
-  it('logs user in and adds stock to watchlist', async () => {
+  it.only('logs user in and adds stock to watchlist', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
       // .post(`/api/v1/stocks/${ticker}`)
-      .post('/api/v1/stocks')
+      .post('/api/v1/stocks/add')
       .send({
         name: 'Test, Inc',
         ticker: 'TST'
@@ -107,7 +107,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it.only('unfollows a specific, named stock for a given user', async () => {
+  it('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
