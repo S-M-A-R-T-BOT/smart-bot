@@ -37,7 +37,7 @@ describe('stock-bot routes', () => {
     pool.end();
   });
 
-  it.only('creates a new user, redirect to main page', async () => {
+  it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
 
     const res  = await agent
@@ -91,15 +91,23 @@ describe('stock-bot routes', () => {
   it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
+    console.log('|| res.body >', res.body);
+
     expect(res.body).toEqual({
-      user_id: '1',
       username: 'Humma Kavula',
       phoneNumber: 8677401,
-      stocks: expect.arrayContaining([expect.objectContaining({})])
+      id: '1',
+      stocks: [
+        { stock_id: '1', name: 'Microsoft', ticker: 'MSFT' },
+        { stock_id: '2', name: 'Apple', ticker: 'AAPL' },
+        { stock_id: '3', name: 'Tesla', ticker: 'TSLA' },
+        { stock_id: '5', name: 'Google', ticker: 'GOOG' },
+        { stock_id: '6', name: 'Kittens', ticker: 'CATS' }
+      ]
     });
   });
 
-  it.only('unfollows all stocks for a given user', async () => {
+  it('unfollows all stocks for a given user', async () => {
     // get stocks followed by user
     // getById(user_id) in junction table?
     // getById(user_id) should return an array
@@ -123,7 +131,7 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
-      console.log(`|| res.body >`, res.body);
+    console.log('|| res.body >', res.body);
 
     // get sms array
     const sms = await agent
@@ -151,7 +159,7 @@ describe('stock-bot routes', () => {
       smsInterval: '0',
       valuePlus: 0,
       valueMinus: 0,
-      user_id: '4'
+      userId: '4'
     });
   });
 
@@ -264,7 +272,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it.only('should search for a stock by symbol', async () => {
+  it('should search for a stock by symbol', async () => {
     const expected = {
       c: expect.any(Number),
       d: expect.any(Number),
