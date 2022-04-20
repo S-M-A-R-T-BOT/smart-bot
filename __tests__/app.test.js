@@ -3,8 +3,10 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const LoginService = require('../lib/services/LoginService');
+const Stock = require('../lib/models/Stock');
 const req = require('express/lib/request');
 const { check } = require('prettier');
+const Login = require('../lib/models/Login');
 const StockService = require('../lib/services/StockService');
 
 const mockUser = {
@@ -97,6 +99,21 @@ describe('stock-bot routes', () => {
     });
   });
 
+  it.only('unfollows all stocks for a given user', async () => {
+    // get stocks followed by user
+    // getById(user_id) in junction table?
+    // getById(user_id) should return an array
+
+    const res = await request(app)
+      .delete('/api/v1/login/1');
+
+    // const expected = await request(app)
+    //   .get('/api/v1/login/1');
+
+    expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({})]));
+  });
+
+
 
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
@@ -140,9 +157,8 @@ describe('stock-bot routes', () => {
 
 
 
+
   it('should update sms_interval for signed in user, and not for anyone else', async () => {
-
-
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -181,11 +197,13 @@ describe('stock-bot routes', () => {
       valueMinus: 0
     };
 
+
     res.body.pop();
     res.body.push(updateUser);
     updateSms = await agent
       .post('/api/v1/sms')
       .send(res.body);
+
 
 
     expect(updateSms.text).toEqual('User ID has already been entered');
@@ -244,6 +262,7 @@ describe('stock-bot routes', () => {
     
 
   });
+
 
   it.only('should search for a stock by symbol', async () => {
     const expected = {
