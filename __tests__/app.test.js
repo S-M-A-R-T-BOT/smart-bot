@@ -83,7 +83,19 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should return a default row for new user ', async () => {
+
+  it('gets a user by id and tells us which stocks they are tracking', async () => {
+    const res = await request(app).get('/api/v1/login/1');
+
+    expect(res.body).toEqual({
+      user_id: '1',
+      username: 'Humma Kavula',
+      phoneNumber: 8677401,
+      stocks: expect.arrayContaining([expect.objectContaining({})])
+    });
+  });
+
+  it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -119,11 +131,13 @@ describe('stock-bot routes', () => {
       smsInterval: '0',
       valuePlus: 0,
       valueMinus: 0,
-      userId: '4'
+      user_id: '4'
     });
   });
 
+
   it('should update sms_interval for signed in user, and not for anyone else', async () => {
+
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -132,7 +146,9 @@ describe('stock-bot routes', () => {
       .redirects(1);
 
     let updateUser = {
+
       userId: res.body[0].id,
+
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
@@ -144,6 +160,7 @@ describe('stock-bot routes', () => {
       .post('/api/v1/sms')
       .send(res.body);
     
+
     expect(updateSms.body).toEqual({
       id: '4',
       smsInterval: '5 Minutes',
@@ -164,6 +181,7 @@ describe('stock-bot routes', () => {
     updateSms = await agent
       .post('/api/v1/sms')
       .send(res.body);
+
 
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
