@@ -3,10 +3,6 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const LoginService = require('../lib/services/LoginService');
-const Stock = require('../lib/models/Stock');
-const req = require('express/lib/request');
-const { check } = require('prettier');
-const Login = require('../lib/models/Login');
 const StockService = require('../lib/services/StockService');
 
 const mockUser = {
@@ -45,14 +41,9 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
-
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
-    );
-
-    // const { username, phoneNumber, email } = mockUser;
-
-    
+    );   
   });
 
   it('logs user in and adds stock to watchlist', async () => {
@@ -86,12 +77,8 @@ describe('stock-bot routes', () => {
     });
   });
 
-
-
   it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
-
-    console.log('|| res.body >', res.body);
 
     expect(res.body).toEqual({
       username: 'Humma Kavula',
@@ -115,13 +102,8 @@ describe('stock-bot routes', () => {
     const res = await request(app)
       .delete('/api/v1/login/1');
 
-    // const expected = await request(app)
-    //   .get('/api/v1/login/1');
-
     expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({})]));
   });
-
-
 
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
@@ -130,8 +112,6 @@ describe('stock-bot routes', () => {
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
-
-    console.log('|| res.body >', res.body);
 
     // get sms array
     const sms = await agent
@@ -163,9 +143,6 @@ describe('stock-bot routes', () => {
     });
   });
 
-
-
-
   it('should update sms_interval for signed in user, and not for anyone else', async () => {
     const agent = request.agent(app);
     //login user
@@ -189,7 +166,6 @@ describe('stock-bot routes', () => {
       .post('/api/v1/sms')
       .send(res.body);
     
-
     expect(updateSms.body).toEqual({
       id: '4',
       smsInterval: '5 Minutes',
@@ -205,18 +181,14 @@ describe('stock-bot routes', () => {
       valueMinus: 0
     };
 
-
     res.body.pop();
     res.body.push(updateUser);
     updateSms = await agent
       .post('/api/v1/sms')
       .send(res.body);
 
-
-
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
-
 
   it('should allow signed in users to changed their phone number', async () => {
     const agent = request.agent(app);
@@ -227,8 +199,6 @@ describe('stock-bot routes', () => {
       .redirects(1);
 
     const newNumber = { phoneNumber: 5034747724 };
-
-    // res.body[0].phoneNumber = newNumber;
 
     const updatePhNum = await agent
       .patch('/api/v1/sms/update-phone')
@@ -244,7 +214,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.skip('should send a text message', async () => { 
+  it.only('should send a text message', async () => { 
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -254,23 +224,16 @@ describe('stock-bot routes', () => {
 
     const newNumber = { phoneNumber: 5034747724 };
 
-    // res.body[0].phoneNumber = newNumber;
     //updating number to dial to
     res = await agent
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0], ...newNumber });
 
-    // console.log('|| res.body >', res.body);
-
     //send sms
     res = await agent
       .get('/api/v1/sms/send-sms')
       .send(res.body);
-
-    
-
   });
-
 
   it('should search for a stock by symbol', async () => {
     const expected = {
@@ -287,6 +250,5 @@ describe('stock-bot routes', () => {
     const res = await StockService.getStockBySymbol('AAPL');
 
     expect(res).toEqual(expected);
-   
   });
 });
