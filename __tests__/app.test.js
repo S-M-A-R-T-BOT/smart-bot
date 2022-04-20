@@ -83,20 +83,19 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should return a default row for new user ', async () => {
+  it.only('should return a default row for new user ', async () => {
     const agent = request.agent(app);
     //login user
-    const res = await agent
+    let res = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
 
+      console.log(`|| res.body >`, res.body);
+
     // get sms array
     const sms = await agent
       .get('/api/v1/sms');
-
-    console.log('|| sms.body >', sms.body);
-    console.log('|| res.body >', res.body);
 
     // create new users sms settings
     let checkState = false;
@@ -124,7 +123,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should update sms_interval for signed in user, and not for anyone else', async () => {
+  it('should update sms_interval for signed in user, and not for anyone else', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -169,4 +168,57 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
+
+  it('should allow signed in users to changed their phone number', async () => {
+    const agent = request.agent(app);
+    //login user
+    const res = await agent
+      .post('/api/v1/login/')
+      .send(mockUser)
+      .redirects(1);
+
+    const newNumber = { phoneNumber: 5034747724 };
+
+    // res.body[0].phoneNumber = newNumber;
+
+    const updatePhNum = await agent
+      .patch('/api/v1/sms/update-phone')
+      .send({ ...res.body[0], ...newNumber });
+
+    console.log('|| updatePhNum.body >', updatePhNum.body);
+    expect(updatePhNum.body).toEqual({
+      user_id: '4',
+      username: 'tester',
+      password_hash: expect.any(String),
+      ph_num: '5034747724',
+      email: 'test@demo.com'
+    });
+  });
+
+  it.skip('should send a text message', async () => { 
+    const agent = request.agent(app);
+    //login user
+    let res = await agent
+      .post('/api/v1/login/')
+      .send(mockUser)
+      .redirects(1);
+
+    const newNumber = { phoneNumber: 5034747724 };
+
+    // res.body[0].phoneNumber = newNumber;
+    //updating number to dial to
+    res = await agent
+      .patch('/api/v1/sms/update-phone')
+      .send({ ...res.body[0], ...newNumber });
+
+    // console.log('|| res.body >', res.body);
+
+    //send sms
+    res = await agent
+      .get('/api/v1/sms/send-sms')
+      .send(res.body);
+
+    
+
+  });
 });
