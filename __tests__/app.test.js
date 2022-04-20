@@ -33,13 +33,15 @@ describe('stock-bot routes', () => {
     pool.end();
   });
 
-  it('creates a new user, redirect to main page', async () => {
+  it.only('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
-
+    console.log('test');
     const res  = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
+
+    console.log(`|| res.body >`, res.body);
 
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
@@ -91,7 +93,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('gets a user by id and tells us which stocks they are tracking', async () => {
+  it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
     expect(res.body).toEqual({
@@ -218,7 +220,7 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it.skip('should allow signed in users to changed their phone number(returns emply object)', async () => {
+  it('should allow signed in users to changed their phone number(returns emply object)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -252,7 +254,7 @@ describe('stock-bot routes', () => {
 
     console.log('|| updatePhNum.body >', updatePhNum.body);
     expect(updatePhNum.body).toEqual({
-      user_id: '4',
+      id: '4',
       username: 'tester',
       password_hash: expect.any(String),
       ph_num: '5034747724',
