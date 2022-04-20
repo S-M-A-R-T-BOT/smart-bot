@@ -214,7 +214,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should send a text message', async () => { 
+  it.skip('should send a text message', async () => { 
     const agent = request.agent(app);
     //login user
     let res = await agent
