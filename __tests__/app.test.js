@@ -232,8 +232,6 @@ describe('stock-bot routes', () => {
       expect(updateRes).toEqual(false);
     }
 
-  });
-
     const updatePhNum = await agent
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0], ...newNumber });
@@ -276,6 +274,8 @@ describe('stock-bot routes', () => {
       .redirects(1);
     const agent = await agent1.delete('/api/v1/login/logout');
     expect(agent.body).toEqual({ success: true });
+
+  });
 
   it('should send a text message', async () => { 
     const agent = request.agent(app);
