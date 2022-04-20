@@ -98,12 +98,26 @@ describe('stock-bot routes', () => {
     // get stocks followed by user
     // getById(user_id) in junction table?
     // getById(user_id) should return an array
+    const [agent] = await registerAndLogin();
 
-    const res = await request(app)
+    const res = await agent
       .delete('/api/v1/login/1');
 
     expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({})]));
   });
+
+
+  it.only('unfollows a specific, named stock for a given user', async () => {
+    const [agent] = await registerAndLogin();
+
+    const res = await agent
+      .delete('/api/v1/login/2/1');
+
+    expect(res.body).toEqual(expect.objectContaining({}));
+  });
+
+
+
 
   it('should return a default row for new user ', async () => {
     const agent = request.agent(app);
