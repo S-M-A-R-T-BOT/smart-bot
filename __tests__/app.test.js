@@ -249,7 +249,6 @@ describe('stock-bot routes', () => {
     };
 
     const res = await StockService.getStockBySymbol('AAPL');
-    console.log('EXTECPETD STOCKIINFO', res);
 
     expect(res).toEqual(expected);
    
