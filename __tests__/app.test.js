@@ -261,6 +261,7 @@ describe('stock-bot routes', () => {
     //   .send(mockUser)
     //   .redirects(1);
     const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
+    // add user log in as text
     expect(agent.body).toEqual(expect.any(String));
 
   });
