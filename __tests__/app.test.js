@@ -235,10 +235,26 @@ describe('stock-bot routes', () => {
       updateRes = true;
       expect(updateRes).toEqual(false);
     }
-  
-    
+
   });
 
+  it.only('should re-log in a user', async () => {
+    const agent1 = request.agent(app);
+
+    let mockUserForLogin = {
+      username: 'Yon Yonson',
+      phoneNumber: 911,
+      password: 'BubbleHash',
+      email: 'yon@bubbles.com'
+    };
+    // const res  = await agent1
+    //   .post('/api/v1/login')
+    //   .send(mockUser)
+    //   .redirects(1);
+    const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
+    expect(agent.body).toEqual({ success: true });
+
+  });
   it('should logout a user', async () => {
     const agent1 = request.agent(app);
 
