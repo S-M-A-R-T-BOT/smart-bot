@@ -95,7 +95,6 @@ describe('stock-bot routes', () => {
       });
     });
 
-    console.log('|| stonks >', stonks);
 
     const userObj = {
       username: res.body[0].username,
@@ -235,34 +234,18 @@ describe('stock-bot routes', () => {
 
     const newNumber = { phoneNumber: 5034747724 };
 
-    if (updateUser.user_id === res.body.id) {
-      updateRes = await agent
-        .post('/api/v1/sms/update-interval')
+
+    const updateUser = { ...res.body[0], ...newNumber };
+
+    if(updateUser.user_id === res.body[0].user_id){
+      console.log(true);
+      const updateRes = await agent
+        .patch('/api/v1/sms/update-phone')
         .send(updateUser);
 
-      expect(updateRes.body).toEqual({
-        id: '4',
-        smsInterval: '30 Minutes',
-        valuePlus: 50,
-        valueMinus: 20,
-        user_id: '4',
-      });
-    } else {
-      updateRes = true;
-      expect(updateRes).toEqual(false);
+      expect(Number(updateRes.body.ph_num)).toEqual(newNumber.phoneNumber);
     }
 
-    const updatePhNum = await agent
-      .patch('/api/v1/sms/update-phone')
-      .send({ ...res.body[0], ...newNumber });
-
-    expect(updatePhNum.body).toEqual({
-      id: '4',
-      username: 'tester',
-      password_hash: expect.any(String),
-      ph_num: '5034747724',
-      email: 'test@demo.com',
-    });
   });
 
   it('should re-log in a user', async () => {
