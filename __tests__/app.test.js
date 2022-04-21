@@ -148,10 +148,7 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-
-
-
-  it.only('should return a default row for new user (userid/id issue) ', async () => {
+  it('should return a default row for new user (userid/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
