@@ -87,7 +87,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('gets a user by id and tells us which stocks they are tracking', async () => {
+  it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
     console.log('|| res.body >', res.body);
