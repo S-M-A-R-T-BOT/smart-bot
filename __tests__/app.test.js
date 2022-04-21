@@ -36,7 +36,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it('creates a new user, redirect to main page', async () => {
+  it.skip('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
       .post('/api/v1/users')
@@ -49,7 +49,7 @@ describe('stock-bot routes', () => {
     );   
   });
 
-  it('creates a new user with url params, redirect to main page', async () => {
+  it.skip('creates a new user with url params, redirect to main page', async () => {
     const agent = request.agent(app);
 
     const res  = await agent
@@ -61,7 +61,7 @@ describe('stock-bot routes', () => {
     );   
   });
 
-  it('logs user in and adds stock to watchlist', async () => {
+  it.skip('logs user in and adds stock to watchlist', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
@@ -78,7 +78,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('gets a stock by id and tells us which users are tracking it', async () => {
+  it.skip('gets a stock by id and tells us which users are tracking it', async () => {
     const [agent] = await registerAndLogin();
     // const agent = request.agent(app);
 
@@ -95,7 +95,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('gets a user by id and tells us which stocks they are tracking', async () => {
+  it.skip('gets a user by id and tells us which stocks they are tracking', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent.get('/api/v1/users/1');
@@ -135,17 +135,19 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('unfollows all stocks for a given user', async () => {
+  it.skip('unfollows all stocks for a given user FIX ME', async () => {
     const [agent] = await registerAndLogin();
 
-    await agent
+    const deleteStocks = await agent
       .delete('/api/v1/users/1');
 
-    await agent.get('/api/v1/users/2');
+    // await agent.get('/api/v1/users/2');
 
-    const resp = await agent.delete('/api/v1/users/2');
+    // const resp = await agent.delete('/api/v1/users/2');
     
-    await agent.get('/api/v1/users/2');
+    // await agent.get('/api/v1/users/2');
+
+    console.log('|| deleteStocks >', deleteStocks.body);
 
     expect(resp.body).toEqual(
       expect.arrayContaining([])
@@ -154,7 +156,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it('unfollows a specific, named stock for a given user', async () => {
+  it.skip('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
@@ -163,40 +165,22 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-  it('should return a default row for new user (user_id/id issue) ', async () => {
+  it.only('should return a default row for new user (user_id/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
-    let res = await agent
+    const res = await agent
       .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
 
-    const userEYEDEE = res.body[0].user_id;
+    const userId = res.body[0].user_id;
 
-    // get sms array
-    const sms = await agent
-      .get('/api/v1/sms')
-      .send(userEYEDEE);
+    const newDefaultRow = await agent.post('/api/v1/sms/newUser/')
+      .send(userId);
 
-    // create new users sms settings
-    let checkState = false;
-    for (const s of sms.body){
-      if(s.id === res.body[0].id){
-        // eslint-disable-next-line
-          console.log('user ID has already been entered');
-        checkState = true;
-        break;
-      }
-    }
+      console.log(`|| userId >`, userId);
 
-    const user_id = res.body[0].user_id;
-
-    if (checkState === false){
-      res = await agent
-        .post(`/api/v1/sms/newUser/${user_id}`);
-    }
-
-    expect(res.body).toEqual({
+    expect(newDefaultRow.body).toEqual({
       id: '4',
       smsInterval: '0',
       valuePlus: 0,
@@ -205,7 +189,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should update sms_interval for signed in user, and not for anyone else FIX ME', async () => {
+  it.skip('should update sms_interval for signed in user, and not for anyone else FIX ME', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -304,7 +288,7 @@ describe('stock-bot routes', () => {
       .redirects(1);
 
     const agent = await agent1.delete('/api/v1/users/logout');
-    console.log(`|| agent.body >`, agent.body);
+    console.log('|| agent.body >', agent.body);
 
     expect(agent.body).toEqual({ success: true });
   });
