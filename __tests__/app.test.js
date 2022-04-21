@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const LoginService = require('../lib/services/LoginService');
 const StockService = require('../lib/services/StockService');
+const stocks = require('../lib/controllers/stocks');
 
 const mockUser = {
   username: 'tester',
@@ -97,10 +98,13 @@ describe('stock-bot routes', () => {
   });
 
   it('gets a user by id and tells us which stocks they are tracking', async () => {
-    const res = await request(app).get('/api/v1/login/1');
+    const [agent] = await registerAndLogin();
+
+    const res = await agent.get('/api/v1/login/1');
 
 
     const stonks = [];
+    console.log('res.body!', res.body);
     res.body.map(stock => {
       stonks.push({
         stock_id: stock.stock_id,
@@ -249,7 +253,7 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it.only('should allow signed in users to change their phone number(returns empty object)', async () => {
+  it('should allow signed in users to change their phone number(returns empty object)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -320,6 +324,8 @@ describe('stock-bot routes', () => {
   });
 
   it('should search for a stock by symbol', async () => {
+    const [agent] = await registerAndLogin();
+
     const expected = {
       c: expect.any(Number),
       d: expect.any(Number),
@@ -331,9 +337,11 @@ describe('stock-bot routes', () => {
       t: expect.any(Number)
     };
 
-    const res = await StockService.getStockBySymbol('AAPL');
+    // const res = await StockService.getStockBySymbol('AAPL');
+    const res = await agent.get('/api/v1/stocks/symbol/AAPL');
 
-    expect(res).toEqual(expected);
+
+    expect(res.body).toEqual(expected);
   });
 
 
