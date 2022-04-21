@@ -22,7 +22,7 @@ const registerAndLogin = async () => {
   
   
   // const { username } = user;
-  await agent.post('/api/v1/login').send(mockUser);
+  await agent.post('/api/v1/users').send(mockUser);
   
   return [agent];
 };
@@ -41,7 +41,7 @@ describe('stock-bot routes', () => {
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
 
@@ -55,7 +55,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
 
     const res  = await agent
-      .post('/api/v1/login/hotdog/hamburger')
+      .post('/api/v1/users/hotdog/hamburger')
       .redirects(1);
 
     expect(res.body).toEqual(
@@ -100,7 +100,7 @@ describe('stock-bot routes', () => {
   it('gets a user by id and tells us which stocks they are tracking', async () => {
     const [agent] = await registerAndLogin();
 
-    const res = await agent.get('/api/v1/login/1');
+    const res = await agent.get('/api/v1/users/1');
 
 
     const stonks = [];
@@ -141,13 +141,13 @@ describe('stock-bot routes', () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
-      .delete('/api/v1/login/1');
+      .delete('/api/v1/users/1');
 
-    const userStocks = await agent.get('/api/v1/login/2');
+    const userStocks = await agent.get('/api/v1/users/2');
 
-    const resp = await agent.delete('/api/v1/login/2');
+    const resp = await agent.delete('/api/v1/users/2');
     
-    const userStocks2 = await agent.get('/api/v1/login/2');
+    const userStocks2 = await agent.get('/api/v1/users/2');
 
     expect(resp.body).toEqual(
       expect.arrayContaining([])
@@ -160,7 +160,7 @@ describe('stock-bot routes', () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
-      .delete('/api/v1/login/2/1');
+      .delete('/api/v1/users/2/1');
 
     expect(res.body).toEqual(expect.objectContaining({}));
   });
@@ -169,7 +169,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
 
@@ -211,7 +211,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
       
@@ -257,7 +257,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
-      .post('/api/v1/login/')
+      .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
@@ -289,10 +289,10 @@ describe('stock-bot routes', () => {
       email: 'yon@bubbles.com'
     };
     // const res  = await agent1
-    //   .post('/api/v1/login')
+    //   .post('/api/v1/users')
     //   .send(mockUser)
     //   .redirects(1);
-    const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
+    const agent = await agent1.post('/api/v1/users').send(mockUserForLogin);
     // add user log in as text
     expect(agent.body).toEqual(expect.any(String));
 
@@ -302,18 +302,18 @@ describe('stock-bot routes', () => {
     const agent1 = request.agent(app);
 
     await agent1
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
-    const agent = await agent1.delete('/api/v1/login/logout');
+    const agent = await agent1.delete('/api/v1/users/logout');
     expect(agent.body).toEqual({ success: true });
   });
 
-  it.skip('should send Cliff a text message', async () => { 
+  it('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
     let res = await agent
-      .post('/api/v1/login/')
+      .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
