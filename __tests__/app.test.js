@@ -307,7 +307,7 @@ describe('stock-bot routes', () => {
     expect(agent.body).toEqual({ success: true });
   });
 
-  it.skip('should send Cliff a text message', async () => { 
+  it.only('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -317,7 +317,7 @@ describe('stock-bot routes', () => {
 
     //send sms
     await agent
-      .get('/api/v1/sms/send-sms')
+      .get('/api/v1/sms/send')
       .send(res.body);
   });
 
