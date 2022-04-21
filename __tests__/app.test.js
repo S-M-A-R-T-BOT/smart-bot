@@ -35,11 +35,11 @@ describe('stock-bot routes', () => {
 
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
-
     const res  = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
+
 
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
@@ -52,8 +52,6 @@ describe('stock-bot routes', () => {
     const res  = await agent
       .post('/api/v1/login/hotdog/hamburger')
       .redirects(1);
-
-    console.log('|| res. >', res.body);
 
     expect(res.body).toEqual(
       expect.arrayContaining([expect.objectContaining({})])
@@ -70,8 +68,6 @@ describe('stock-bot routes', () => {
         name: 'Test, Inc',
         ticker: 'TST'
       });
-
-    console.log('|| res.body >', res.body);
 
     expect(res.body).toEqual({
       stock_id: expect.any(String),
@@ -94,10 +90,32 @@ describe('stock-bot routes', () => {
   it.only('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
-    expect(res.body).toEqual({
+    console.log('|| res.body >', res.body);
+
+    const stonks = [];
+    res.body.map(stock => {
+      stonks.push({
+        stock_id: stock.stock_id,
+        name: stock.name,
+        ticker: stock.ticker
+      });
+    });
+
+    console.log('|| stonks >', stonks);
+
+
+    const userObj = {
+      username: res.body[0].username,
+      phoneNumber: res.body[0].ph_num,
+      user_id: res.body[0].user_id,
+      stocks: stonks
+    };
+    
+
+    expect(userObj).toEqual({
       username: 'Humma Kavula',
-      phoneNumber: 8677401,
-      id: '1',
+      phoneNumber: '8677401',
+      user_id: '1',
       stocks: [
         { stock_id: '1', name: 'Microsoft', ticker: 'MSFT' },
         { stock_id: '2', name: 'Apple', ticker: 'AAPL' },
@@ -133,7 +151,7 @@ describe('stock-bot routes', () => {
 
 
 
-  it.skip('should return a default row for new user (userid/id issue) ', async () => {
+  it('should return a default row for new user (userid/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -171,29 +189,28 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.skip('should update sms_interval for signed in user, and not for anyone else (userid/id issue)', async () => {
+  it('should update sms_interval for signed in user, and not for anyone else (userid/id issue)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
       .post('/api/v1/login')
       .send(mockUser)
       .redirects(1);
-
+      
     let updateUser = {
-
-      userId: res.body[0].id,
-
+      userId: res.body[0].user_id,
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
     };
+
     res.body.push(updateUser);
 
     //update user array
     let updateSms = await agent
       .post('/api/v1/sms')
       .send(res.body);
-    
+
     expect(updateSms.body).toEqual({
       id: '4',
       smsInterval: '5 Minutes',
@@ -218,7 +235,7 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it.skip('should allow signed in users to changed their phone number(returns emply object)', async () => {
+  it('should allow signed in users to changed their phone number(returns emply object)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -241,7 +258,6 @@ describe('stock-bot routes', () => {
         user_id: '4'
       });
     } else {
-      console.log('User cannot adjust intervals of other Users');
       updateRes = true;
       expect(updateRes).toEqual(false);
     }
@@ -250,9 +266,8 @@ describe('stock-bot routes', () => {
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0], ...newNumber });
 
-    console.log('|| updatePhNum.body >', updatePhNum.body);
     expect(updatePhNum.body).toEqual({
-      user_id: '4',
+      id: '4',
       username: 'tester',
       password_hash: expect.any(String),
       ph_num: '5034747724',
@@ -261,10 +276,10 @@ describe('stock-bot routes', () => {
   });
 
 
- it('should re-log in a user', async () => {
+  it('should re-log in a user', async () => {
     const agent1 = request.agent(app);
 
-    let mockUserForLogin = {
+    const mockUserForLogin = {
       username: 'Yon Yonson',
       phoneNumber: 911,
       password: 'BubbleHash',
@@ -275,7 +290,8 @@ describe('stock-bot routes', () => {
     //   .send(mockUser)
     //   .redirects(1);
     const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
-    expect(agent.body).toEqual({ success: true });
+    // add user log in as text
+    expect(agent.body).toEqual(expect.any(String));
 
   });
 
@@ -291,7 +307,7 @@ describe('stock-bot routes', () => {
 
   });
 
-  it('should send a text message', async () => { 
+  it.skip('should send a text message', async () => { 
     const agent = request.agent(app);
     //login user
     let res = await agent
