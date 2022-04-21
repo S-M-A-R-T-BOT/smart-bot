@@ -2,9 +2,7 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
-const LoginService = require('../lib/services/LoginService');
-const StockService = require('../lib/services/StockService');
-const stocks = require('../lib/controllers/stocks');
+
 
 const mockUser = {
   username: 'tester',
@@ -104,7 +102,7 @@ describe('stock-bot routes', () => {
 
 
     const stonks = [];
-    console.log('res.body!', res.body);
+
     res.body.map(stock => {
       stonks.push({
         stock_id: stock.stock_id,
@@ -140,14 +138,14 @@ describe('stock-bot routes', () => {
   it('unfollows all stocks for a given user', async () => {
     const [agent] = await registerAndLogin();
 
-    const res = await agent
+    await agent
       .delete('/api/v1/users/1');
 
-    const userStocks = await agent.get('/api/v1/users/2');
+    await agent.get('/api/v1/users/2');
 
     const resp = await agent.delete('/api/v1/users/2');
     
-    const userStocks2 = await agent.get('/api/v1/users/2');
+    await agent.get('/api/v1/users/2');
 
     expect(resp.body).toEqual(
       expect.arrayContaining([])
@@ -309,16 +307,16 @@ describe('stock-bot routes', () => {
     expect(agent.body).toEqual({ success: true });
   });
 
-  it('should send Cliff a text message', async () => { 
+  it.skip('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
-    let res = await agent
+    const res = await agent
       .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
     //send sms
-    res = await agent
+    await agent
       .get('/api/v1/sms/send-sms')
       .send(res.body);
   });
