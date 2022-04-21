@@ -2,8 +2,7 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
-const LoginService = require('../lib/services/LoginService');
-const StockService = require('../lib/services/StockService');
+
 
 const mockUser = {
   username: 'tester',
@@ -21,7 +20,7 @@ const registerAndLogin = async () => {
   
   
   // const { username } = user;
-  await agent.post('/api/v1/login').send(mockUser);
+  await agent.post('/api/v1/users').send(mockUser);
   
   return [agent];
 };
@@ -40,7 +39,7 @@ describe('stock-bot routes', () => {
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
 
@@ -54,7 +53,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
 
     const res  = await agent
-      .post('/api/v1/login/hotdog/hamburger')
+      .post('/api/v1/users/hotdog/hamburger')
       .redirects(1);
 
     expect(res.body).toEqual(
@@ -97,10 +96,13 @@ describe('stock-bot routes', () => {
   });
 
   it('gets a user by id and tells us which stocks they are tracking', async () => {
-    const res = await request(app).get('/api/v1/login/1');
+    const [agent] = await registerAndLogin();
+
+    const res = await agent.get('/api/v1/users/1');
 
 
     const stonks = [];
+
     res.body.map(stock => {
       stonks.push({
         stock_id: stock.stock_id,
@@ -136,16 +138,14 @@ describe('stock-bot routes', () => {
   it('unfollows all stocks for a given user', async () => {
     const [agent] = await registerAndLogin();
 
-    const res = await agent
-      .delete('/api/v1/login/1');
+    await agent
+      .delete('/api/v1/users/1');
 
-    const userStocks = await agent.get('/api/v1/login/2');
-    console.log('userStocks :>> ', userStocks.text);
-    const resp = await agent.delete('/api/v1/login/2');
+    await agent.get('/api/v1/users/2');
+
+    const resp = await agent.delete('/api/v1/users/2');
     
-    // console.log('resp.body :>> ', resp.body);
-    const userStocks2 = await agent.get('/api/v1/login/2');
-    // console.log('userStocks 140 :>> ', userStocks2.text);
+    await agent.get('/api/v1/users/2');
 
     expect(resp.body).toEqual(
       expect.arrayContaining([])
@@ -158,7 +158,7 @@ describe('stock-bot routes', () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
-      .delete('/api/v1/login/2/1');
+      .delete('/api/v1/users/2/1');
 
     expect(res.body).toEqual(expect.objectContaining({}));
   });
@@ -167,7 +167,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
 
@@ -209,7 +209,7 @@ describe('stock-bot routes', () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
-      .post('/api/v1/login')
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
       
@@ -251,45 +251,30 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it('should allow signed in users to changed their phone number(returns emply object)', async () => {
+  it('should allow signed in users to change their phone number(returns empty object)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
-      .post('/api/v1/login/')
+      .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
     const newNumber = { phoneNumber: 5034747724 };
 
-    if(updateUser.user_id === res.body.id){
-      updateRes = await agent
-        .post('/api/v1/sms/update-interval')
-        .send(updateUser);
-
-      expect(updateRes.body).toEqual({
-        id: '4',
-        smsInterval: '30 Minutes',
-        valuePlus: 50,
-        valueMinus: 20,
-        user_id: '4'
-      });
-    } else {
-      updateRes = true;
-      expect(updateRes).toEqual(false);
-    }
 
     const updatePhNum = await agent
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0], ...newNumber });
 
     expect(updatePhNum.body).toEqual({
-      id: '4',
+      user_id: '4',
       username: 'tester',
       password_hash: expect.any(String),
       ph_num: '5034747724',
       email: 'test@demo.com'
     });
   });
+
 
 
   it('should re-log in a user', async () => {
@@ -302,10 +287,10 @@ describe('stock-bot routes', () => {
       email: 'yon@bubbles.com'
     };
     // const res  = await agent1
-    //   .post('/api/v1/login')
+    //   .post('/api/v1/users')
     //   .send(mockUser)
     //   .redirects(1);
-    const agent = await agent1.post('/api/v1/login').send(mockUserForLogin);
+    const agent = await agent1.post('/api/v1/users').send(mockUserForLogin);
     // add user log in as text
     expect(agent.body).toEqual(expect.any(String));
 
@@ -314,37 +299,31 @@ describe('stock-bot routes', () => {
   it('should logout a user', async () => {
     const agent1 = request.agent(app);
 
-    const res  = await agent1
-      .post('/api/v1/login')
+    await agent1
+      .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
-    const agent = await agent1.delete('/api/v1/login/logout');
+    const agent = await agent1.delete('/api/v1/users/logout');
     expect(agent.body).toEqual({ success: true });
-
   });
 
-  it.skip('should send a text message', async () => { 
+  it.only('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
-    let res = await agent
-      .post('/api/v1/login/')
+    const res = await agent
+      .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
-    const newNumber = { phoneNumber: 5034747724 };
-
-    //updating number to dial to
-    res = await agent
-      .patch('/api/v1/sms/update-phone')
-      .send({ ...res.body[0], ...newNumber });
-
     //send sms
-    res = await agent
-      .get('/api/v1/sms/send-sms')
+    await agent
+      .get('/api/v1/sms/send')
       .send(res.body);
   });
 
   it('should search for a stock by symbol', async () => {
+    const [agent] = await registerAndLogin();
+
     const expected = {
       c: expect.any(Number),
       d: expect.any(Number),
@@ -356,8 +335,13 @@ describe('stock-bot routes', () => {
       t: expect.any(Number)
     };
 
-    const res = await StockService.getStockBySymbol('AAPL');
+    // const res = await StockService.getStockBySymbol('AAPL');
+    const res = await agent.get('/api/v1/stocks/symbol/AAPL');
 
-    expect(res).toEqual(expected);
+
+    expect(res.body).toEqual(expected);
   });
+
+
+
 });
