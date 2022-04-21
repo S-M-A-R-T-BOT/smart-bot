@@ -87,7 +87,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('gets a user by id and tells us which stocks they are tracking', async () => {
+  it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
     console.log('|| res.body >', res.body);
@@ -151,7 +151,7 @@ describe('stock-bot routes', () => {
 
 
 
-  it('should return a default row for new user (userid/id issue) ', async () => {
+  it.only('should return a default row for new user (userid/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -159,9 +159,12 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
 
+    const userEYEDEE = res.body[0].user_id;
+
     // get sms array
     const sms = await agent
-      .get('/api/v1/sms');
+      .get('/api/v1/sms')
+      .send(userEYEDEE);
 
     // create new users sms settings
     let checkState = false;
@@ -174,10 +177,11 @@ describe('stock-bot routes', () => {
       }
     }
 
+    const userId = res.body[0].user_id;
+
     if (checkState === false){
       res = await agent
-        .post('/api/v1/sms/newUser')
-        .send(res.body[0].id);
+        .post(`/api/v1/sms/newUser/${userId}`);
     }
 
     expect(res.body).toEqual({
