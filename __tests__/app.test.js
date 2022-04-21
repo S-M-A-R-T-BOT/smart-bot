@@ -12,17 +12,20 @@ const mockUser = {
   email: 'test@demo.com'
 };
 
-const registerAndLogin = async (userProps = {}) => {
-  const password = userProps.password ?? mockUser.password;
+const registerAndLogin = async () => {
+  // const password = userProps.password ?? mockUser.password;
 
   const agent = request.agent(app);
 
-  const user = await LoginService.create({ ...mockUser, ...userProps });
-
-  const { username } = user;
-  await agent.post('/api/v1/login').send({ username, password });
-  return [agent, user];
+  // const user = await LoginService.create({ ...mockUser, ...userProps });
+  
+  
+  // const { username } = user;
+  await agent.post('/api/v1/login').send(mockUser);
+  
+  return [agent];
 };
+
 
 describe('stock-bot routes', () => {
   beforeEach(() => {
@@ -32,6 +35,7 @@ describe('stock-bot routes', () => {
   afterAll(() => {
     pool.end();
   });
+
 
   it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
@@ -62,7 +66,6 @@ describe('stock-bot routes', () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
-      // .post(`/api/v1/stocks/${ticker}`)
       .post('/api/v1/stocks/add')
       .send({
         name: 'Test, Inc',
@@ -77,7 +80,13 @@ describe('stock-bot routes', () => {
   });
 
   it('gets a stock by id and tells us which users are tracking it', async () => {
-    const res = await request(app).get('/api/v1/stocks/1');
+    const [agent] = await registerAndLogin();
+    // const agent = request.agent(app);
+
+
+
+    const res = await agent.get('/api/v1/stocks/1');
+
 
     expect(res.body).toEqual({
       stock_id: '1',
@@ -90,7 +99,6 @@ describe('stock-bot routes', () => {
   it('gets a user by id and tells us which stocks they are tracking', async () => {
     const res = await request(app).get('/api/v1/login/1');
 
-    console.log('|| res.body >', res.body);
 
     const stonks = [];
     res.body.map(stock => {
@@ -101,7 +109,6 @@ describe('stock-bot routes', () => {
       });
     });
 
-    console.log('|| stonks >', stonks);
 
 
     const userObj = {
@@ -126,17 +133,28 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('unfollows all stocks for a given user', async () => {
+  it('unfollows all stocks for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
       .delete('/api/v1/login/1');
 
-    expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({})]));
+    const userStocks = await agent.get('/api/v1/login/2');
+    console.log('userStocks :>> ', userStocks.text);
+    const resp = await agent.delete('/api/v1/login/2');
+    
+    // console.log('resp.body :>> ', resp.body);
+    const userStocks2 = await agent.get('/api/v1/login/2');
+    // console.log('userStocks 140 :>> ', userStocks2.text);
+
+    expect(resp.body).toEqual(
+      expect.arrayContaining([])
+    );
+    // expect(res.body).toEqual(expect.objectContaining({}));
   });
 
 
-  it.only('unfollows a specific, named stock for a given user', async () => {
+  it('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
