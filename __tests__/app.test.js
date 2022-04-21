@@ -126,10 +126,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('unfollows all stocks for a given user', async () => {
-    // get stocks followed by user
-    // getById(user_id) in junction table?
-    // getById(user_id) should return an array
+  it.only('unfollows all stocks for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
@@ -139,7 +136,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it('unfollows a specific, named stock for a given user', async () => {
+  it.only('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
