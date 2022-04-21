@@ -163,7 +163,7 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-  it('should return a default row for new user (userid/id issue) ', async () => {
+  it('should return a default row for new user (user_id/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -189,11 +189,11 @@ describe('stock-bot routes', () => {
       }
     }
 
-    const userId = res.body[0].user_id;
+    const user_id = res.body[0].user_id;
 
     if (checkState === false){
       res = await agent
-        .post(`/api/v1/sms/newUser/${userId}`);
+        .post(`/api/v1/sms/newUser/${user_id}`);
     }
 
     expect(res.body).toEqual({
@@ -201,11 +201,11 @@ describe('stock-bot routes', () => {
       smsInterval: '0',
       valuePlus: 0,
       valueMinus: 0,
-      userId: '4'
+      user_id: '4'
     });
   });
 
-  it('should update sms_interval for signed in user, and not for anyone else (userid/id issue)', async () => {
+  it('should update sms_interval for signed in user, and not for anyone else (user_id/id issue)', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -214,17 +214,18 @@ describe('stock-bot routes', () => {
       .redirects(1);
       
     let updateUser = {
-      userId: res.body[0].user_id,
+      user_id: res.body[0].user_id,
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
     };
+    console.log('updateUser!!', updateUser);
 
     res.body.push(updateUser);
 
     //update user array
     let updateSms = await agent
-      .post('/api/v1/sms')
+      .patch('/api/v1/sms')
       .send(res.body);
 
     expect(updateSms.body).toEqual({
@@ -232,11 +233,11 @@ describe('stock-bot routes', () => {
       smsInterval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0,
-      userId: '4'
+      user_id: '4'
     });
 
     updateUser = {
-      userId: '2',
+      user_id: '2',
       interval: '5 Minutes',
       valuePlus: 0,
       valueMinus: 0
@@ -245,9 +246,8 @@ describe('stock-bot routes', () => {
     res.body.pop();
     res.body.push(updateUser);
     updateSms = await agent
-      .post('/api/v1/sms')
+      .patch('/api/v1/sms')
       .send(res.body);
-
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
@@ -307,7 +307,7 @@ describe('stock-bot routes', () => {
     expect(agent.body).toEqual({ success: true });
   });
 
-  it.only('should send Cliff a text message', async () => { 
+  it.skip('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
     const res = await agent
