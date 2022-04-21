@@ -205,7 +205,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should update sms_interval for signed in user, and not for anyone else (user_id/id issue)', async () => {
+  it.only('should update sms_interval for signed in user, and not for anyone else FIX ME', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -251,22 +251,23 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it('should allow signed in users to change their phone number(returns empty object)', async () => {
+  it.skip('should allow signed in users to change their phone number(returns empty object)', async () => {
     const agent = request.agent(app);
     //login user
-    const res = await agent
+    let res = await agent
       .post('/api/v1/users/')
       .send(mockUser)
       .redirects(1);
 
     const newNumber = { phoneNumber: 5034747724 };
 
-
-    const updatePhNum = await agent
+    res.body[0].phoneNumber = newNumber.phoneNumber;
+    
+    res = await agent
       .patch('/api/v1/sms/update-phone')
-      .send({ ...res.body[0], ...newNumber });
+      .send({ ...res.body[0] });
 
-    expect(updatePhNum.body).toEqual({
+    expect(res.body).toEqual({
       user_id: '4',
       username: 'tester',
       password_hash: expect.any(String),
@@ -275,9 +276,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-
-
-  it('should re-log in a user', async () => {
+  it.skip('should re-log in a user', async () => {
     const agent1 = request.agent(app);
 
     const mockUserForLogin = {
@@ -296,14 +295,17 @@ describe('stock-bot routes', () => {
 
   });
 
-  it('should logout a user', async () => {
+  it.skip('should logout a user', async () => {
     const agent1 = request.agent(app);
 
     await agent1
       .post('/api/v1/users')
       .send(mockUser)
       .redirects(1);
+
     const agent = await agent1.delete('/api/v1/users/logout');
+    console.log(`|| agent.body >`, agent.body);
+
     expect(agent.body).toEqual({ success: true });
   });
 
