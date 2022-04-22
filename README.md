@@ -30,17 +30,24 @@ With a POSTGRES implementation we were able to take advantage of using SQL to ma
 
 ## RESTFUL
 
-GET (url_name)/api/v1/users
 
 
 | REQUEST | URL |   Description   |
 |:------:|:---------:|:---------:|
-|    GET   |    (url_name)/api/v1/users/:id    |   grab uusername by its ID   |
+|    GET   |    (url_name)/api/v1/users/:id    |   grab username by its ID   |
 |   POST   |    (url_name)/api/v1/users/   |  Check if  user does exists, if it does not create a user  |
 |  DELETE  |    (url_name)/api/v1/users/logout    | Logs out the user |
 
 
+| REQUEST | URL |   Description   |
+|:------:|:---------:|:---------:|
+|    GET   |    (url_name)/api/v1/sms/    |   grabs all text messgaes   |
+|   GET   |    (url_name)/api/v1/sms/send   |  Sends Text Message to User  |
+|  PATCH  |    (url_name)/api/v1/sms/update-phone    | Changes user's Phone Number |
 
 
-
-
+| REQUEST | URL |   Description   |
+|:------:|:---------:|:---------:|
+|    GET   |    (url_name)/api/v1/stocks/:id    |   grab a stock by its id and tell which users are following that stocks   |
+|   GET   |    (url_name)/api/v1/stocks//symbol/:symbol   |  Grabs Stocks by TICKER and displays price  |
+|  POST  |    (url_name)/api/v1/stocks/    | Grab a random stock |
