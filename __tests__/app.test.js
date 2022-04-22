@@ -36,7 +36,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it.only('creates a new user, redirect to main page', async () => {
+  it('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
       .post('/api/v1/users')
@@ -291,7 +291,7 @@ describe('stock-bot routes', () => {
       .send(res.body);
   });
 
-  it('should search for a stock by symbol', async () => {
+  it.only('should search for a stock by symbol', async () => {
     const [agent] = await registerAndLogin();
 
     const expected = {
