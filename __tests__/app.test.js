@@ -36,7 +36,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it('creates a new user, redirect to main page', async () => {
+  it.skip('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
       .post('/api/v1/users')
@@ -49,7 +49,7 @@ describe('stock-bot routes', () => {
     );   
   });
 
-  it('creates a new user with url params, redirect to main page', async () => {
+  it.skip('creates a new user with url params, redirect to main page', async () => {
     const agent = request.agent(app);
 
     const res  = await agent
@@ -61,7 +61,7 @@ describe('stock-bot routes', () => {
     );   
   });
 
-  it('logs user in and adds stock to watchlist', async () => {
+  it.skip('logs user in and adds stock to watchlist', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
@@ -78,7 +78,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('gets a stock by id and tells us which users are tracking it', async () => {
+  it.skip('gets a stock by id and tells us which users are tracking it', async () => {
     const [agent] = await registerAndLogin();
     // const agent = request.agent(app);
 
@@ -95,7 +95,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('gets a user by id and tells us which stocks they are tracking', async () => {
+  it.skip('gets a user by id and tells us which stocks they are tracking', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent.get('/api/v1/users/1');
@@ -155,7 +155,7 @@ describe('stock-bot routes', () => {
     // expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-  it('unfollows a specific, named stock for a given user', async () => {
+  it.skip('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
     const res = await agent
@@ -164,7 +164,7 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-  it('should return a default row for new user (user_id/id issue) ', async () => {
+  it.skip('should return a default row for new user (user_id/id issue) ', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -219,7 +219,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should allow signed in users to change their phone number(returns empty object)', async () => {
+  it.skip('should allow signed in users to change their phone number(returns empty object)', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -244,7 +244,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it('should re-log in a user', async () => {
+  it.skip('should re-log in a user', async () => {
     const agent1 = request.agent(app);
 
     const mockUserForLogin = {
@@ -263,7 +263,7 @@ describe('stock-bot routes', () => {
 
   });
 
-  it('should logout a user', async () => {
+  it.skip('should logout a user', async () => {
     const agent1 = request.agent(app);
 
     await agent1
@@ -291,7 +291,7 @@ describe('stock-bot routes', () => {
       .send(res.body);
   });
 
-  it('should search for a stock by symbol', async () => {
+  it.skip('should search for a stock by symbol', async () => {
     const [agent] = await registerAndLogin();
 
     const expected = {
