@@ -36,7 +36,7 @@ describe('stock-bot routes', () => {
   });
 
 
-  it('creates a new user, redirect to main page', async () => {
+  it.only('creates a new user, redirect to main page', async () => {
     const agent = request.agent(app);
     const res  = await agent
       .post('/api/v1/users')
