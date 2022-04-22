@@ -17,4 +17,17 @@ jobs:
     - run: npm test
       env:
         CI: true
-        DATABASE_URL: postgres://alchemy:alchemy@postgres:5432/alchemy
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+        API_URL: ${{ secrets.API_URL }}
+        PORT: ${{ secrets.PORT }}
+        SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
+        COOKIE_NAME: ${{ secrets.COOKIE_NAME }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        API_KEY: ${{ secrets.API_KEY }}
+        FINNHUB_TOKEN: ${{ secrets.FINNHUB_TOKEN }}
+        COMMUNICATION_SERVICES_CONNECTION_STRING: ${{ secrets.COMMUNICATION_SERVICES_CONNECTION_STRING }}
+        TWILIO_SECRET: ${{ secrets.TWILIO_SECRET }}
+        TWILIO_SID: ${{ secrets.TWILIO_SID }}
+        TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+        TWILIO_KEY: ${{ secrets.TWILIO_KEY }}
