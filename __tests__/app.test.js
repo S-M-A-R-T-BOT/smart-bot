@@ -312,6 +312,17 @@ describe('stock-bot routes', () => {
     expect(res.body).toEqual(expected);
   });
 
+  it('gets a stock by id and tells us how many users are tracking it', async () => {
+    const [agent] = await registerAndLogin();
 
+    const res = await agent.get('/api/v1/stocks/trackers/1');
+
+    expect(res.body).toEqual({
+      stock_id: '1',
+      name: 'Microsoft',
+      ticker: 'MSFT',
+      users: { sum: '3' }
+    });
+  });
 
 });
