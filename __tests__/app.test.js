@@ -155,7 +155,6 @@ describe('stock-bot routes', () => {
     // expect(res.body).toEqual(expect.objectContaining({}));
   });
 
-
   it('unfollows a specific, named stock for a given user', async () => {
     const [agent] = await registerAndLogin();
 
@@ -178,6 +177,8 @@ describe('stock-bot routes', () => {
     const newDefaultRow = await agent.post('/api/v1/sms/newUser/')
       .send(userId);
 
+    console.log('|| userId >', userId);
+
     expect(newDefaultRow.body).toEqual({
       id: '4',
       smsInterval: '0',
@@ -195,17 +196,17 @@ describe('stock-bot routes', () => {
       .send(mockUser)
       .redirects(1);
       
-    let updateUser = {
+    const updateUser = {
       user_id: res.body[0].user_id,
       interval: '5 Minutes',
-      valuePlus: 0,
-      valueMinus: 0
+      valuePlus: 20,
+      valueMinus: 30
     };
 
     res.body.push(updateUser);
 
     //update user array
-    let updateSms = await agent
+    const updateSms = await agent
       .patch('/api/v1/sms')
       .send(res.body);
 
@@ -229,7 +230,7 @@ describe('stock-bot routes', () => {
     const newNumber = { phoneNumber: 5034747724 };
 
     res.body[0].phoneNumber = newNumber.phoneNumber;
-    
+    console.log('|| res.body234 >', res.body[0]);
     res = await agent
       .patch('/api/v1/sms/update-phone')
       .send({ ...res.body[0] });
