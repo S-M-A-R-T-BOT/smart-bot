@@ -51,9 +51,3 @@ With a POSTGRES implementation we were able to take advantage of using SQL to ma
 |    GET   |    (url_name)/api/v1/stocks/:id    |   grab a stock by its id and tell which users are following that stocks   |
 |   GET   |    (url_name)/api/v1/stocks//symbol/:symbol   |  Grabs Stocks by TICKER and displays price  |
 |  POST  |    (url_name)/api/v1/stocks/    | Grab a random stock |
-
-
-
-
-
-
