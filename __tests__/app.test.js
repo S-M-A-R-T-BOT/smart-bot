@@ -141,11 +141,11 @@ describe('stock-bot routes', () => {
     await agent
       .delete('/api/v1/users/1');
 
-    await agent.get('/api/v1/users/2');
+    // await agent.get('/api/v1/users/2');
 
-    const resp = await agent.delete('/api/v1/users/2');
+    // const resp = await agent.delete('/api/v1/users/2');
     
-    await agent.get('/api/v1/users/2');
+    // await agent.get('/api/v1/users/2');
 
     expect(resp.body).toEqual(
       expect.arrayContaining([])
@@ -205,7 +205,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.only('should update sms_interval for signed in user, and not for anyone else FIX ME', async () => {
+  it('should update sms_interval for signed in user, and not for anyone else FIX ME', async () => {
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -251,7 +251,7 @@ describe('stock-bot routes', () => {
     expect(updateSms.text).toEqual('User ID has already been entered');
   });
 
-  it.skip('should allow signed in users to change their phone number(returns empty object)', async () => {
+  it('should allow signed in users to change their phone number(returns empty object)', async () => {
     const agent = request.agent(app);
     //login user
     let res = await agent
@@ -276,7 +276,7 @@ describe('stock-bot routes', () => {
     });
   });
 
-  it.skip('should re-log in a user', async () => {
+  it('should re-log in a user', async () => {
     const agent1 = request.agent(app);
 
     const mockUserForLogin = {
@@ -295,7 +295,7 @@ describe('stock-bot routes', () => {
 
   });
 
-  it.skip('should logout a user', async () => {
+  it('should logout a user', async () => {
     const agent1 = request.agent(app);
 
     await agent1
@@ -309,7 +309,7 @@ describe('stock-bot routes', () => {
     expect(agent.body).toEqual({ success: true });
   });
 
-  it.skip('should send Cliff a text message', async () => { 
+  it('should send Cliff a text message', async () => { 
     const agent = request.agent(app);
     //login user
     const res = await agent
@@ -343,7 +343,6 @@ describe('stock-bot routes', () => {
 
     expect(res.body).toEqual(expected);
   });
-
 
 
 });
